@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 BANDERSNATCH=${BANDERSNATCH:-"/usr/local/bin/bandersnatch"}
-PYPI_MASTER="https://pypi.org/"
+PYPI_MASTER="https://pypi.org"
 TUNASYNC_UPSTREAM=${TUNASYNC_UPSTREAM_URL:-$PYPI_MASTER}
+TUNASYNC_UPSTREAM=${TUNASYNC_UPSTREAM%/}
 CONF="/tmp/bandersnatch.conf"
 INIT=${INIT:-"0"}
 
@@ -37,18 +38,30 @@ compare-method = stat
 
 [plugins]
 enabled =
+    regex_project
     blocklist_project
+    prerelease_release
+
+[filter_regex]
+packages =
+    .+-nightly(-|$)
+
+[filter_prerelease]
+packages =
+    duckdb
+    graphscope-client
+    lalsuite
+    gs-apps
+    gs-engine
+    gs-include
+    bigdl-dllib
+    bigdl-dllib-spark2
+    bigdl-dllib-spark3
+    ovito
 
 [blocklist]
 packages =
-    tf-nightly-gpu
-    tf-nightly
-    tensorflow-io-nightly
-    tf-nightly-cpu
-    pyagrum-nightly
     uselesscapitalquiz
-    tf-nightly-intel
-    tf-nightly-cpu-aws
 EOF
 	for i in $PYPI_EXCLUDE; do
 		echo "    $i"
